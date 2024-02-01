@@ -1,5 +1,8 @@
 <template>
   <v-app>
+    <v-app-bar color="primary" >
+      <v-app-bar-title>File Type Converter</v-app-bar-title>
+    </v-app-bar>
     <v-main>
       <v-container>
         <input type="file" @change="uploadFile" id="file" name="document"/>
