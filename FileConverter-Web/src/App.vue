@@ -5,29 +5,42 @@
     </v-app-bar>
     <v-main>
       <v-container>
-        <input type="file" @change="uploadFile" id="file" name="document"/>
-        <v-btn v-if="downloadUrl" @click="downloadFile" >Download</v-btn>
+        <div id="uploadFileButton">
+          <input type="file" @change="uploadFile" id="file" name="document" ref="fileInput" hidden />
+          <v-btn v-if="!downloadUrl" @click="triggerFileInput" >Upload File<v-icon end icon="mdi-upload"></v-icon></v-btn>
+          <p v-if="fileName !== ''" >{{ fileName }}</p>
+        </div>
+        
+        <v-btn class="ma-2"  v-if="downloadUrl" @click="downloadFile" >
+
+          
+          Download
+        </v-btn>
       </v-container>
+      
     </v-main>
   </v-app>
 </template>
 
 <script>
 
-
 export default {
   name: 'App',
 
   components: {
-    
   },
 
   data: () => ({
-    downloadUrl : null
+    downloadUrl : null,
+    fileName : ''
   }),
   methods:{
+    triggerFileInput(){
+      this.$refs.fileInput.click();
+    },
     uploadFile(event){
       const file = event.target.files[0];
+      this.fileName = file.name;
       const formData = new FormData();
       formData.append('document' , file);
 
@@ -53,3 +66,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+
+
+</style>
