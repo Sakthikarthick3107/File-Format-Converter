@@ -10,6 +10,7 @@ from reportlab.pdfgen import canvas
 from pdf2docx import Converter
 import tempfile
 import os
+from PIL import Image
 
 # Create your views here.
 class ConvertDocxToPdf(APIView):
@@ -79,3 +80,33 @@ class ConvertPdfToDocx(APIView):
         finally:
             os.unlink(temp_pdf.name)
             os.unlink(temp_docx.name)
+            
+class ConvertPngToJpg(APIView):
+    def post(self,request):
+        png_file = request.FILES.get('document')
+        if not png_file:
+            return Response({'error' : 'No image provided'} , status=status.HTTP_400_BAD_REQUEST)
+        
+        image = Image.open(png_file)
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+        
+        img_io = io.BytesIO()
+        image.save(img_io, format='JPEG', quality=70)
+        img_io.seek(0)
+        return HttpResponse(content=img_io.getvalue(), content_type='image/jpeg')
+
+class ConvertJpgToPng(APIView):
+    def post(self,request):
+        jpg_file = request.FILES.get('document')
+        if not jpg_file:
+            return Response({'error' : 'No jpg files are provided'} , status=status.HTTP_400_BAD_REQUEST)
+        image = Image.open(jpg_file)
+        
+        if image.mode != 'RGBA':
+            image = image.convert('RGBA')
+        img_io = io.BytesIO()
+        image.save(img_io , format='PNG')
+        img_io.seek(0)
+        response = HttpResponse(content=img_io.getvalue(), content_type='image/png')
+        return response

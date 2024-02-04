@@ -29,4 +29,5 @@ Finally, it provides an example curl command to test the API endpoint by uploadi
 This example demonstrates the basic functionality and may need to be expanded or modified depending on specific requirements, such as handling different document formats or more complex PDF generation features.
 
 
-https://chat.openai.com/share/b29a1694-7e9c-4873-bc70-c7e5776f3a6e
+https://chat.openai.com/c/30a4ac21-7fc5-4ed3-838c-fbccacad9f70
+https://chat.openai.com/c/2d085197-cc86-456f-b49f-92fd5d0e594d

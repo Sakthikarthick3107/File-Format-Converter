@@ -11,8 +11,10 @@
         <v-row justify="space-between">
           <v-col cols="12" xs="12" sm="6">
             <div class="d-flex flex-column">
-              <v-btn @click="setSelectedType('docx-to-pdf')" class="mb-2" color="primary">Docx to Pdf</v-btn>
-              <v-btn @click="setSelectedType('pdf-to-docx')" class="mb-2" color="primary">Pdf to Doc</v-btn>
+              <v-btn @click="setSelectedType('docx-to-pdf')" class="mb-2 mx-10" color="primary">Docx to Pdf</v-btn>
+              <v-btn @click="setSelectedType('pdf-to-docx')" class="mb-2 mx-10" color="primary">Pdf to Doc</v-btn>
+              <v-btn @click="setSelectedType('png-to-jpg')" class="mb-2 mx-10" color="primary">Png to Jpg</v-btn>
+              <v-btn @click="setSelectedType('jpg-to-png')" class="mb-2 mx-10" color="primary">Jpg to Png</v-btn>
             </div>
 
           </v-col>
@@ -27,8 +29,8 @@
 
               <v-btn v-if="selectedFile !== null && downloadUrl === null" @click="proceedConversion"
                 color="secondary">Convert</v-btn>
-              <p v-if="selectedType !== null">Upload your {{ selectedType }} file</p>
-              <p v-if="fileName !== ''">{{ fileName }}</p>
+              <p v-if="selectedType !== null">Upload your {{ selectedType.split('-')[0] }} file</p>
+              <p v-if="downloadingFileName !== ''">{{ downloadingFileName }}</p>
               <v-btn class="ma-2" v-if="downloadUrl" @click="downloadFile">Download
               </v-btn>
             </div>
@@ -55,7 +57,8 @@ export default {
     selectedType: null,
     downloadUrl: null,
     selectedFile: null,
-    fileName: ''
+    fileName: '',
+    downloadingFileName : null
   }),
   methods: {
     setSelectedType(type) {
@@ -63,6 +66,7 @@ export default {
       this.downloadUrl = null
       this.fileName = ''
       this.selectedFile = null
+      this.downloadingFileName = null
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -70,7 +74,7 @@ export default {
     uploadFile(event) {
       const file = event.target.files[0];
       const uploadType = this.selectedType.split('-')[0]
-      
+
       if (!(file.name.endsWith(uploadType))) {
         alert('Please upload the file that are document format!');
         this.selectedFile = null;
@@ -91,7 +95,9 @@ export default {
       })
         .then((response) => response.blob())
         .then((blob) => {
+          const fileExtension = '.'+ this.selectedType.split('-')[2];
           this.downloadUrl = window.URL.createObjectURL(new Blob([blob]));
+          this.downloadingFileName = this.fileName.split('.')[0] + fileExtension
           this.selectedType = null
         })
         .catch((err) => console.log('error', err))
@@ -102,7 +108,7 @@ export default {
     downloadFile() {
       const link = document.createElement('a');
       link.href = this.downloadUrl;
-      link.setAttribute('download', 'converted.pdf');
+      link.setAttribute('download', this.downloadingFileName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
