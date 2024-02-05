@@ -1,7 +1,13 @@
 
 <template>
   <v-app>
-    <v-app-bar color="primary">
+    <v-app-bar :elevation="4" color="primary">
+      <!-- <template v-slot:prepend>
+        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+        <v-avatar size="50">
+          <img :src="logo"/>
+        </v-avatar>
+      </template> -->
       <v-app-bar-title>File Type Converter</v-app-bar-title>
     </v-app-bar>
     <v-main>
@@ -9,7 +15,7 @@
       <br />
       <v-container>
 
-        <v-row justify="space-between">
+        <v-row full-width >
           <v-col cols="12" xs="12" sm="6">
             <v-row >
               <v-col cols="6"  sm="6" md="4" lg="3" class="d-flex ">
@@ -24,7 +30,9 @@
               <v-col cols="6"  sm="6" md="4" lg="3" class="d-flex ">
                 <v-btn @click="setSelectedType('jpg-to-png')" :color="selectedType==='jpg-to-png'? 'red' : 'primary'" block>Jpg to Png</v-btn>
               </v-col>
-              
+              <v-col cols="6"  sm="6" md="4" lg="3" class="d-flex ">
+                <v-btn @click="setSelectedType('xlsx-to-csv')" :color="selectedType==='xlsx-to-csv'? 'red' : 'primary'" block>Xlsx to Csv</v-btn>
+              </v-col>
               
             </v-row>
 
@@ -33,7 +41,7 @@
           <v-col cols="12" xs="12" sm="6" class="convertContainer" justify="center">
 
             <div v-if="selectedType===null">
-                <p style="font-weight:600;">Choose a type of conversion to proceed</p>
+                <p>Choose a type of conversion to proceed</p>
             </div>
               <div v-if="selectedType !== null && selectedFile===null" class="d-flex flex-column">
                 <input type="file" @change="uploadFile" id="file" name="document" ref="fileInput" hidden  multiple/>
@@ -49,7 +57,8 @@
                 color="secondary">Convert</v-btn>
               </div>
               <div v-if="isConversionLoading" class="d-flex flex-column align-center justify-center">
-                <v-progress-circular  :size="50" :width="8" indeterminate :color="colorLoading[selectedType.split('-')[2]]"></v-progress-circular>
+                <!-- <v-progress-circular  :size="50" :width="8" indeterminate :color="colorLoading[selectedType.split('-')[2]]"></v-progress-circular> -->
+                <img height="100" :src="doc2pdf"/>
               <p2 class="mt-2" >Converting to {{ selectedType.split('-')[2] }}...</p2>
               </div>
             
@@ -69,14 +78,17 @@
 </template>
 
 <script>
-
+// import logo from './assets/logo.png'
+import doc2pdf from './assets/doc-to-pdf.gif';
 export default {
   name: 'App',
 
   components: {
+
   },
 
   data: () => ({
+    doc2pdf:doc2pdf,
     selectedType: null,
     downloadUrl: null,
     selectedFile: null,
@@ -135,7 +147,7 @@ export default {
           this.selectedType = null;
           setTimeout(()=>{
             this.isConversionLoading = false;
-          },3000)
+          },5000)
           
         })
         .catch((err) => console.log('error', err))

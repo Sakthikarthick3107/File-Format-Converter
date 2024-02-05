@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from rest_framework.response import Response
+from rest_framework.response import Response 
 from rest_framework import status
 from rest_framework.views import APIView
-from django.http import HttpResponse
+from django.http import HttpResponse , FileResponse
 from docx import Document
 import io
 from reportlab.pdfgen import canvas
@@ -11,6 +11,7 @@ from pdf2docx import Converter
 import tempfile
 import os
 from PIL import Image
+import pandas as pd
 
 # Create your views here.
 class ConvertDocxToPdf(APIView):
@@ -125,4 +126,17 @@ class ConvertJpgToPng(APIView):
         image.save(img_io , format='PNG')
         img_io.seek(0)
         response = HttpResponse(content=img_io.getvalue(), content_type='image/png')
+        return response
+    
+class ConvertXslxToCsv(APIView):
+    def post(self,request):
+        xlsx_file = request.FILES.get('document')
+        df = pd.read_excel(xlsx_file , engine='openpyxl')
+        buffer = io.BytesIO()
+        df.to_csv(buffer,index=False)
+        
+        buffer.seek(0)
+        response = FileResponse(buffer , as_attachment=True , content_type='text/csv')
+        
+        response['Content-Disposition'] = 'attachment;filename="converted.csv"'
         return response

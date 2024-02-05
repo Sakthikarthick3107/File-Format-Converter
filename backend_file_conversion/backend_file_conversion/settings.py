@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-f_fo9#f*^v_lpm984j%xoi=*r*(1s&3oaob)6&+gr-^0&xxdys
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['sakthikarthick-file-conversion-backend.onrender.com' , '127.0.0.1']
 
 
 # Application definition
