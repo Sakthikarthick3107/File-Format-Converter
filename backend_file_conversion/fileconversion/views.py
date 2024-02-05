@@ -17,7 +17,7 @@ import pandas as pd
 class ConvertDocxToPdf(APIView):
     def post(self,request,format=None):
         document = request.FILES.get('document')
-        doc_name = document.name
+
         if not document:
             return Response({'error':'No document provided'} , status=status.HTTP_400_BAD_REQUEST)
 
@@ -63,9 +63,8 @@ class ConvertDocxToPdf(APIView):
         p.save()
         buffer.seek(0)
         response = HttpResponse(buffer , content_type='application/pdf')
-        base_name = doc_name.rsplit('.docx',1)[0]
-        op_name = f"{base_name}.pdf"
-        response['Content-Disposition'] = f'attachment; filename="{op_name}"'
+        
+        response['Content-Disposition'] = f'attachment; filename="converted.ext"'
         return response   
     
 class ConvertPdfToDocx(APIView):
@@ -91,7 +90,7 @@ class ConvertPdfToDocx(APIView):
                 docx_content = docx_file.read()
                 
                 response = HttpResponse(docx_content, content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-                response['Content-Disposition'] = 'attachment; filename="converted.docx"'
+                response['Content-Disposition'] = 'attachment; filename="converted.ext"'
 
                 return response
         finally:
@@ -138,5 +137,5 @@ class ConvertXslxToCsv(APIView):
         buffer.seek(0)
         response = FileResponse(buffer , as_attachment=True , content_type='text/csv')
         
-        response['Content-Disposition'] = 'attachment;filename="converted.csv"'
+        response['Content-Disposition'] = 'attachment;filename="converted.ext"'
         return response
