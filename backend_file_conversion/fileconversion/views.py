@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from docx import Document
 import io
 from reportlab.pdfgen import canvas
-# from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter
 from pdf2docx import Converter
 import tempfile
 import os
@@ -17,33 +17,49 @@ class ConvertDocxToPdf(APIView):
     def post(self,request,format=None):
         document = request.FILES.get('document')
         doc_name = document.name
-        # print(doc_name)
         if not document:
             return Response({'error':'No document provided'} , status=status.HTTP_400_BAD_REQUEST)
-        # elif not doc_name.lower().endswith('.doc'):
-        #     return Response({'error' : 'This file is not a .docx document'})
+
         
         doc = Document(document)
         
         
         buffer = io.BytesIO()
-        p = canvas.Canvas(buffer)
+        p = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter 
         
-        page_height = 800
-        y_position = page_height
+      
+        margin = 50  
+        available_width = width - 2 * margin
+        y_position = height - margin
         line_height = 12
         
+        p.setFont("Helvetica", 10)  
+
         for para in doc.paragraphs:
-            if y_position < line_height * 3:
-                p.showPage()
-                y_position = page_height
-                
-            p.drawString(40 , y_position ,para.text)
-            y_position -= line_height
             
+            words = para.text.split()
+            line = ""
+            for word in words:
+                if p.stringWidth(line + word, "Helvetica", 10) < available_width:
+                    line += word + " "
+                else:
+
+                    p.drawString(margin, y_position, line)
+                    line = word + " "
+                    y_position -= line_height
+
+                    if y_position < margin:
+                        p.showPage()
+                        y_position = height - margin
+                        p.setFont("Helvetica", 10)  
+            
+
+            p.drawString(margin, y_position, line)
+            y_position -= line_height
+
         p.showPage()
         p.save()
-       
         buffer.seek(0)
         response = HttpResponse(buffer , content_type='application/pdf')
         base_name = doc_name.rsplit('.docx',1)[0]
