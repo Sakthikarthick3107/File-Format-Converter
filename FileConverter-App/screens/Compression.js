@@ -1,11 +1,12 @@
-import { SafeAreaView,  Text } from 'react-native'
+import { SafeAreaView,  StatusBar,  Text } from 'react-native'
 import React from 'react'
+import Frame from '../components/Frame'
 
 const Compression = () => {
   return (
-    <SafeAreaView>
-      <Text>Compression</Text>
-    </SafeAreaView>
+    <Frame>
+      
+    </Frame>
   )
 }
 
