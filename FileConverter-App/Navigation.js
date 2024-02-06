@@ -4,6 +4,7 @@ import  { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Conversion from "./screens/Conversion";
 import Compression from "./screens/Compression";
 import { MaterialIcons } from '@expo/vector-icons';
+import UploadAndConvert from "./screens/UploadAndConvert";
 
 
 const Stack = createNativeStackNavigator();
@@ -13,8 +14,8 @@ const BottomTabNavigation = () => {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
-                tabBarActiveTintColor: 'white',
-                tabBarInactiveTintColor: '#b3b5cc', 
+                tabBarActiveTintColor: 'black',
+                tabBarInactiveTintColor: '#343541', 
                 tabBarHideOnKeyboard: true,
                 tabBarLabelPosition: 'below-icon',
                 tabBarStyle: {
@@ -59,6 +60,7 @@ export const PageNavigation = () =>{
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home">
                 <Stack.Screen component={BottomTabNavigation} name="Home" options={{headerShown:false}} />
+                <Stack.Screen component={UploadAndConvert} name="UploadAndConvert" options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
