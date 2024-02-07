@@ -102,7 +102,7 @@ export default {
     },
     uploadFile(event) {
       const file = event.target.files[0];
-      const uploadType = this.selectedType.split('-')[0]
+      let uploadType = this.selectedType.split('-')[0]
       if(uploadType === 'jpeg'){
         uploadType = 'jpg';
       }
